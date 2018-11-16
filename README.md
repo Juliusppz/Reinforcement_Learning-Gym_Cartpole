@@ -1,5 +1,5 @@
 # Reinforcement Learning in the Cartpole Environment of OpenAI's Gym
-The scripts shown here deal with the CartPole environment of OpenAI's Gym. They implement autonomous agents that are able to learn how to "solve" it, i.e. balancing the pole within a stable configuration for at least 195 steps. The first implementation uses a neural network (NN) implementation of Q-learning. The other two explore an original reinforcement learning algorithm using a directed graph to represent the environment in two different stages of complexity.
+The scripts shown here deal with the CartPole environment of OpenAI's Gym. They implement autonomous agents that are able to learn how to solve it, i.e. balancing the pole within a stable configuration for at least 195 steps. The first implementation uses a neural network (NN) implementation of Q-learning. The other two explore an original reinforcement learning algorithm using a directed graph to represent the environment in two different stages of complexity.
 
 ## 1) Neural Q-learning
 Q-learning is a common reinforcement learning technique, where the decision policy is updated using the rewards assigned to the outcomes of an action (if a step leads to failure or not) and estimates of the best option of the decision policy itself for the next step (a nice explanation can be found at https://en.wikipedia.org/wiki/Q-learning). Here, we will train the policies using a NN, where the states are used as input and for each possible action (two in this case) an output will be produced that can be interpreted as the quality of the resulting state performing the respective action. 
@@ -53,7 +53,7 @@ done = False
 solved = False
 ```
 
-Running the environment has two parts for each episode. In the first step the environment is run and the NN model is used to decide on the actions. Simultaneously, data of the run is stored in "history". In the second part the model is trained on the collected data.
+There are two steps for each episode. In the first step the environment is run and the NN model is used to decide on the actions. Simultaneously, data of the run is stored in "history". In the second part the model is trained on the collected data.
 ```
 for episode in range(episodes):
     state = env.reset()
@@ -108,9 +108,9 @@ After each simulation run, if the training data set is large enough, the NN is t
 ## 2) Simple Directed Graph Approach
 An alternative approach is to divide the overall state space in segments that each represent a volume in the state space and create an algorithm that memorizes the outcomes for all the segments in combination with an action. These segments, which we will refer to as states for simplicity, can for this environment lead to either other states or to failure after an action is performed. As a result one may consider an algorithm that assigns values to the states based on their best outcomes and decides to perform actions that lead to the most valuable states. For the sake of simplicity the state space is segmented by using a discrete grid along each state observable in the following implementations.
 
-As a first step we will only track states that lead to failure and if both actions from state A lead to states that resulted in failure earlier, state A will also be marked as resulting in failure. Here we initialize the state grid in way that each state is assumed not to result in failure and once both actions from that state resulted in failure it is considered to fail. This approach will clearly lead to problems, but it will serve as an instructive starting point for a more complex approach.
+As a first step we will only track states that lead to failure and if both actions from state A lead to states that resulted in failure earlier, state A will also be marked as resulting in failure. Here, we initialize the state grid in way that each state is assumed not to result in failure and once both actions from that state resulted in failure it is considered to fail. This approach will clearly lead to problems, but it will serve as an instructive starting point for a more complex approach.
 
-Imports first.
+We start with the imports again.
 ```
 import gym
 import math
@@ -127,7 +127,7 @@ def createGrid(gridmin, gridmax, Npoints):
     return grid
 ```
 
-We define a function that gives us the index of the grid point being closest to a certain value. This will be used to identify the discrete state from the state observations returned by the step(...) function.
+We define a function that gives us the index of the grid point being closest to a certain value. This will be used to identify the discrete state from the state observations returned by the `step(...)` function.
 ```
 def matrixIndexFromGrid(val, grid):
     if (val < grid[0] or val > grid[-1]):
@@ -167,7 +167,7 @@ actionarray = np.zeros([Ngrid, Ngrid, Ngrid, Ngrid])
 actionarray = actionarray.astype(int)
 ```
 
-Next we initialize a bunch of variables that we will need for the simulation loop. Most notably we need to keep track if we want to use the last step to update "actionarray", based on whether the simulation was just reset and we need an index array "index" to access "actionarray".
+Next we initialize a bunch of variables that we will need for the simulation loop. Most notably we need to keep track if we want to use the last step to update _actionarray_, based on whether the simulation was just reset and we need an index array _index_ to access _actionarray_.
 ```
 lastindex = np.zeros(4)
 uselast = False
