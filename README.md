@@ -388,7 +388,9 @@ First, we deal with the action decision. This is only relevant if the last step 
                     statevaluearray[index[0], index[1], index[2], index[3]] = score1 + bonus
                 else:
                     statevaluearray[index[0], index[1], index[2], index[3]] = 1
-    # If the last step resulted in failure, the number of concurrent successful steps is saved and the statistics of states leading to failure are updated, if the step before the last did not also result in failure.
+    # If the last step resulted in failure, the number of concurrent successful steps is 
+    # saved and the statistics of states leading to failure are updated, if the step before 
+    # the last did not also result in failure.
     if done or any(np.equal(index, -1)):
         episodec += 1
         lastrewards[0] = i - lasti
