@@ -59,6 +59,7 @@ for episode in range(episodes):
     state = env.reset()
     state = np.reshape(state, [1, statedim])
 ```
+
 At each step of an episode we first decide whether to choose a random action or use the prescribed one, we then perform the environment step and append the results to the training data. If the step results in failure the statistics of the run are gathered and the next can be started.
 ```
     for tick in range(500):
@@ -84,6 +85,7 @@ At each step of an episode we first decide whether to choose a random action or 
                 solved = True
             break
 ```
+
 After each simulation run, if the training data set is large enough, the NN is trained. For this the target value is determined by the reward and punishment and the prediction of the model for the next step according to the Q-learning technique. Finally, for the next run, the randomness is decreased.
 ```
     if len(history) > batchsize:
@@ -306,6 +308,7 @@ Compared to the previous implementation the main loop is getting a bit crowded. 
 for i in range(10000000):
     env.render()
 ```
+
 First, we deal with the action decision. This is only relevant if the last step did not result in failure, otherwise the environment is reset. Here we differentiate between 4 cases. In the first the current state is new and there are no statistics which action leads to some other state. In this case a random action is chosen. In the second and third case there are statistics of resulting state for one of the two actions. For those the expected value of the next state is calculated and compared to "threshold" to decide whether the result is good enough or if the other action should be tried. In the fourth case there are statistics for both actions and the better one is chosen. Note that here is a lot of room for improvement to explore the state space more efficiently.
 ```
     if not any(np.equal(index, -1)):
@@ -405,6 +408,7 @@ First, we deal with the action decision. This is only relevant if the last step 
                 failstats1[lastindex[0], lastindex[1], lastindex[2], lastindex[3]] += 1
         uselast = False
 ```
+
 In the second part, the statistics of the state space are updated as long as the last step was not a reset. For each action it is checked whether the last step lead to a state that was already tracked as a result. If this is the case, the number of times it was the result is incremented by one. If it is not the case and there is room for at least one other tracked result state, the resulting state is added and its count initialized at 1.  Finally, a step forward is performed.
 ```
     else:
