@@ -15,7 +15,7 @@ from keras.optimizers import Adam
 from collections import deque
 ```
 
-Next, we initialize a number of variables, most notably the discount factor needed for Q-learning, the percentage of random actions at simulation start (experimentstart) and the reduction of randomness during the simulation (experimentreduction).
+Next, we initialize a number of variables, most notably the discount factor needed for Q-learning, the percentage of random actions at simulation start (_experimentstart_) and the reduction of randomness during the simulation (_experimentreduction_).
 ```
 episodes = 2000
 
@@ -53,7 +53,7 @@ done = False
 solved = False
 ```
 
-There are two steps for each episode. In the first step the environment is run and the NN model is used to decide on the actions. Simultaneously, data of the run is stored in "history". In the second part the model is trained on the collected data.
+There are two steps for each episode. In the first step the environment is run and the NN model is used to decide on the actions. Simultaneously, data of the run is stored in _history_. In the second part the model is trained on the collected data.
 ```
 for episode in range(episodes):
     state = env.reset()
@@ -167,7 +167,7 @@ actionarray = np.zeros([Ngrid, Ngrid, Ngrid, Ngrid])
 actionarray = actionarray.astype(int)
 ```
 
-Next we initialize a bunch of variables that we will need for the simulation loop. Most notably we need to keep track if we want to use the last step to update _actionarray_, based on whether the simulation was just reset and we need an index array _index_ to access _actionarray_.
+Next we initialize a bunch of variables that we will need for the simulation loop. Most notably, we need to keep track if we want to use the last step to update _actionarray_, based on whether the simulation was just reset and we need an index array _index_ to access _actionarray_.
 ```
 lastindex = np.zeros(4)
 uselast = False
@@ -265,7 +265,7 @@ xgrid = createGrid(xmin, xmax, Ngrid + 1)
 xdotgrid = createGrid(xdotmin, xdotmax, Ngrid + 1)
 ```
 
-Next, we need one array to store all the values of the different states (statevaluearray), 2 arrays to store the edges that connect a start state with with a result state given an action (actionarraygraph0, actionarraygraph1) and 2 arrays that count the number of times the results occurred (actionarraystats0 and actionarraystats1). The edge array and its tracking array need a dimension for the number of result states that are tracked (nconnect) as well as a dimension for a 4-tuple corresponding to the indices of the result state on the grid. The number of times of an action from a state directly resulting in failure is counted in the separate arrays failstats0 and failstats1.
+Next, we need one array to store all the values of the different states (_statevaluearray_), 2 arrays to store the edges that connect a start state with with a result state given an action (_actionarraygraph0_, _actionarraygraph1_) and 2 arrays that count the number of times the results occurred (_actionarraystats0_ and _actionarraystats1_). The edge array and its tracking array need a dimension for the number of result states that are tracked (_nconnect_) as well as a dimension for a 4-tuple corresponding to the indices of the result state on the grid. The number of times of an action from a state directly resulting in failure is counted in the separate arrays _failstats0_ and _failstats1_.
 ```
 nconnect = 10
 statevaluearray = np.ones([Ngrid, Ngrid, Ngrid, Ngrid]) # All the state values are initialized as 1.
@@ -309,7 +309,7 @@ for i in range(10000000):
     env.render()
 ```
 
-First, we deal with the action decision. This is only relevant if the last step did not result in failure, otherwise the environment is reset. Here we differentiate between 4 cases. In the first the current state is new and there are no statistics which action leads to some other state. In this case a random action is chosen. In the second and third case there are statistics of resulting state for one of the two actions. For those the expected value of the next state is calculated and compared to "threshold" to decide whether the result is good enough or if the other action should be tried. In the fourth case there are statistics for both actions and the better one is chosen. Note that here is a lot of room for improvement to explore the state space more efficiently.
+First, we deal with the action decision. This is only relevant if the last step did not result in failure, otherwise the environment is reset. Here we differentiate between 4 cases. In the first the current state is new and there are no statistics which action leads to some other state. In this case a random action is chosen. In the second and third case there are statistics of resulting state for one of the two actions. For those the expected value of the next state is calculated and compared to _threshold_ to decide whether the result is good enough or if the other action should be tried. In the fourth case there are statistics for both actions and the better one is chosen. Note that here is a lot of room for improvement to explore the state space more efficiently.
 ```
     if not any(np.equal(index, -1)):
         # if both actions have not been tried
