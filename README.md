@@ -1,5 +1,4 @@
 # Reinforcement_Learning-Gym_Cartpole
-
 The scripts shown here deal with the CartPole environment of OpenAI Gym. They implement autonomous agents that are able to learn how to "solve" it, i.e. balancing the pole within a stable configuration for at least 195 steps. The first implementation uses a neural network (NN) implementation of Q-learning. The other two explore an original reinforcement learning algorithm using a directed graph to represent the environment in two different stages of complexity.
 
 ## 1) Neural Q-learning
