@@ -33,7 +33,7 @@ statedim = env.observation_space.shape[0]
 actiondim = env.action_space.n
 ```
 
-We set up a NN of 2 densely connected hidden layers with 30 neurons each and optimize it using Adam.
+We set up a NN of two densely connected hidden layers with 30 neurons each and optimize it using Adam.
 ```
 nn = Sequential()
 nn.add(Dense(30, input_dim=statedim, activation='relu'))
@@ -86,7 +86,7 @@ At each step of an episode we first decide whether to choose a random action or 
             break
 ```
 
-After each simulation run, if the training data set is large enough, the NN is trained. For this the target value is determined by the reward and punishment and the prediction of the model for the next step according to the Q-learning technique. Finally, for the next run, the randomness is decreased.
+After each simulation run, if the training data set is large enough, the NN is trained. For this the target value is determined by the reward and punishment and the prediction of the model for the next step according to the Q-learning technique. Finally, for the next run the randomness is decreased.
 ```
     if len(history) > batchsize:
         if sum(np.equal(np.array(history)[:, 2], punishment)) < minfails and episode > 100:
@@ -214,7 +214,7 @@ for i in range(10000000):
              matrixIndexFromGrid(observation[2], gammagrid), matrixIndexFromGrid(observation[3], gammadotgrid)]
 ```
 
-We see that this approach usually solves this environment. However, if we let it run through we also see that in the end the environment is reset every iteration. This is mainly caused by two influences. First, the discrete grid can not capture the full state space precisely. Secondly there is some randomness in the initial conditions. In combination this means that the actual state in the continuous state space after each step can have slight variations and still be identified as the same state on the discrete grid. As a result it can at one time lead to failure and at another time not. However, with this approach we exclude a state as soon as it fails once and after letting the environment run for a while every state leads to failure sooner or later so it will be excluded sooner or later until all states are excluded.
+We see that this approach usually solves this environment. However, if we let it run through we also see that in the end the environment is reset every iteration. This is mainly caused by two influences. First, the discrete grid can not capture the full state space precisely. Secondly, there is some randomness in the initial conditions. In combination this means that the actual state in the continuous state space after each step can have slight variations and still be identified as the same state on the discrete grid. As a result it can at one time lead to failure and at another time not. However, with this approach we exclude a state as soon as it fails once and after letting the environment run for a while every state leads to failure sooner or later so it will be excluded sooner or later until all states are excluded.
 
 ## 3) Complex Directed Graph Approach
 Now let's go one step further. Given the finite number of states that we have due to our discrete grid, we can imagine the state space as a directed graph. Ideally in this graph, from each node that corresponds to a state 2 edges that correspond to the actions would leave and each lead to a node that also corresponds to a state. However, in our system an action from a start state can have several different resulting states. We can incorporate this in a simple statistic that approximates the statistically expected outcome of a certain action given a start state. As a result, one action from a state will be represented as a number of edges leading to the possible resulting nodes with each edge having a probability associated with it. We can then assign values to the nodes (which correspond to states) that are updated as the simulation is run based on the best expected outcome of the two possible actions. If we assign a low value to the node corresponding to failure, the value of the nodes leading faster (with fewer steps) to failure will decrease faster and a good strategy can be obtained by choosing the actions leading to nodes of higher value.
@@ -411,7 +411,7 @@ First, we deal with the action decision. This is only relevant if the last step 
         uselast = False
 ```
 
-In the second part, the statistics of the state space are updated as long as the last step was not a reset. For each action it is checked whether the last step lead to a state that was already tracked as a result. If this is the case, the number of times it was the result is incremented by one. If it is not the case and there is room for at least one other tracked result state, the resulting state is added and its count initialized at 1.  Finally, a step forward is performed.
+In the second part, the statistics of the state space are updated as long as the last step was not a reset. For each action, it is checked whether the last step lead to a state that was already tracked as a result. If this is the case the number of times it was, the result is incremented by one. If it is not the case and there is room for at least one other tracked result state, the resulting state is added and its count initialized at 1.  Finally, a step forward is performed.
 ```
     else:
         if uselast:
